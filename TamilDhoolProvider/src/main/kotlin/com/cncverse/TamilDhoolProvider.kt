@@ -18,7 +18,7 @@ import org.jsoup.Jsoup
 //import java.time.format.DateTimeFormatter
 
 class TamilDhoolProvider : MainAPI() { // all providers must be an instance of MainAPI
-    override var mainUrl = "https://www.tamildhool.com"
+    override var mainUrl = "https://www.tamildhool.tech"
     override var name = "TamilDhool"
     override val hasMainPage = true
     override var lang = "ta"
