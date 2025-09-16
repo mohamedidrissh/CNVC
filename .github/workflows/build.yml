@@ -24,25 +24,30 @@ jobs:
       - name: Create local.properties
         run: echo "sdk.dir=/usr/local/android-sdk" > local.properties
 
-      - name: Build with Gradle (skip lint)
-        run: ./gradlew build -x lint
+      - name: Build Cloudstream addons (skip lint)
+        run: |
+          ./gradlew ":CastleTvProvider:assembleRelease" -x lint
+          ./gradlew ":CNC Verse:assembleRelease" -x lint
+          ./gradlew ":CricifyProvider:assembleRelease" -x lint
 
       - name: Prepare build artifacts
         run: |
           mkdir -p output
-          # Copy all json files found anywhere in the repo
           find . -name "*.json" -exec cp {} output/ \; || true
-          # Optional: copy all aar files if needed
           find . -name "*.aar" -exec cp {} output/ \; || true
 
-      - name: Push build artifacts to builds branch
+      - name: Push artifacts to builds branch
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git fetch origin
-          git checkout -B builds
-          rm -rf *
-          cp -r output/* .
-          git add .
-          git commit -m "Build artifacts" || echo "No changes to commit"
-          git push origin builds --force
+          if [ -d "output" ] && [ "$(ls -A output)" ]; then
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            git fetch origin
+            git checkout -B builds
+            rm -rf *
+            cp -r output/* .
+            git add .
+            git commit -m "Build artifacts" || echo "No changes to commit"
+            git push origin builds --force
+          else
+            echo "No build artifacts found, skipping push"
+          fi
