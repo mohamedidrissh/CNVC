@@ -21,6 +21,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: Create local.properties
+        run: echo "sdk.dir=/usr/local/android-sdk" > local.properties
+
       - name: Build with Gradle
         run: ./gradlew build
 
