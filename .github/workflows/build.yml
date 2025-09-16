@@ -29,11 +29,13 @@ jobs:
 
       - name: Prepare build artifacts
         run: |
-          mkdir output
-          cp -r **/build/outputs/* output/ || true
-          cp -r **/build/*.json output/ || true
+          mkdir -p output
+          # Copy all json files found anywhere in the repo
+          find . -name "*.json" -exec cp {} output/ \; || true
+          # Optional: copy all aar files if needed
+          find . -name "*.aar" -exec cp {} output/ \; || true
 
-      - name: Publish to builds branch
+      - name: Push build artifacts to builds branch
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
