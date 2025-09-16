@@ -1,0 +1,34 @@
+name: Publish JSON to builds branch
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish-json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Copy JSON files
+        run: |
+          mkdir -p output
+          cp -r jsons/* output/ || echo "No JSON files found in jsons/"
+
+      - name: Push JSON files to builds branch
+        run: |
+          if [ -d "output" ] && [ "$(ls -A output)" ]; then
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            git fetch origin
+            git checkout -B builds
+            rm -rf *
+            cp -r output/* .
+            git add .
+            git commit -m "Update JSON files for Cloudstream" || echo "No changes to commit"
+            git push origin builds --force
+          else
+            echo "No JSON files to publish, skipping push"
+          fi
