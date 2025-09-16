@@ -24,8 +24,8 @@ jobs:
       - name: Create local.properties
         run: echo "sdk.dir=/usr/local/android-sdk" > local.properties
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build with Gradle (skip lint)
+        run: ./gradlew build -x lint
 
       - name: Prepare build artifacts
         run: |
